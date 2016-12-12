@@ -7,9 +7,9 @@ link_directories(/diana/lib)
 include_directories(/home/diana/libboost/boost_1_61_0/include/)
 link_directories(/home/diana/libboost/boost_1_61_0/stage/lib)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 
 set(SOURCE_FILES main.cpp)
 add_executable(DZ_client_new ${SOURCE_FILES})

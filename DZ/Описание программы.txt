@@ -7,5 +7,5 @@
 для облегчения проверки работы сервера). 
 
 Все необходимый файлы для работы программы можно скачать из репозитория: 
-https://github.com/DianaBespechnaya/AL/DZ 
+https://github.com/DianaBespechnaya/AL_DZ 
 или

@@ -36,20 +36,23 @@ void MainWindow::set_new_col_client(int col){
 
 void MainWindow::rezultwelldone(){
     if (ui->textEdit->toPlainText().toStdString() ==""){
-        mpz_class rez;
-        char* r = new char[MAX_INT];
-        mpz_init(rez.get_mpz_t());
-        rez=1;
+        mpz_t rez;
+        mpz_init(rez);
+
+        mpz_set_ui(rez, 1);
         for (int i=0;i<rezult.size();i++){
-            rez=rez*rezult[i];
+            mpz_mul(rez, rez,rezult[i].get_mpz_t());
         }
-        mpz_get_str(r,10,rez.get_mpz_t());
+
+        size_t size_rez = mpz_sizeinbase(rez,10);
+        char* r = new char[size_rez];
+        mpz_get_str(r,10,rez);
 
         std::stringstream ss(r);
-        while(ss){
-            char* temp= new char[100]();
-            temp[99] ='\0';
-            ss.read(temp,98);
+        while(ss.rdbuf()->in_avail()){
+            char* temp= new char[size_rez];
+            temp[size_rez] ='\0';
+            ss.read(temp,size_rez);
             ui->textEdit->insertPlainText(temp);
             delete[] temp;
         }
@@ -76,7 +79,7 @@ void MainWindow::on_pushButton_clicked()
     rezult.clear();
     try{
         if (!(ui->radioButton->isChecked()||ui->radioButton_2->isChecked()))
-            throw "Не выбрана операция.";
+            throw runtime_error("Не выбрана операция.");
         QPalette *palette = new QPalette();
         palette->setColor(QPalette::Base,Qt::white);
         ui->textEdit->setPalette(*palette);
@@ -89,9 +92,10 @@ void MainWindow::on_pushButton_clicked()
             delete palette;
        } BOOST_SCOPE_EXIT_END
         if (ui->radioButton->isChecked()) {
-            if (str==""){
-                throw "Неверный формат ввода, введитe числo в формате число1";
-            }
+            for(int i = 0; i < str.size();i++)
+                if (!isdigit(str[i]))
+                    throw runtime_error("Неверный формат ввода, введитe числo в формате число1");
+
             if (str=="0"){
                 ui->textEdit->setText("1");
                 QPalette *palette = new QPalette();
@@ -112,9 +116,15 @@ void MainWindow::on_pushButton_clicked()
         std::istringstream iss(str, std::istringstream::in);
         string n, k;
         iss >> n; iss >> k;
-        if (n=="" || k==""){
-            throw "Неверный формат ввода, введите два числа в формате число1_число2";
-        }
+
+        for(int i = 0; i < n.size();i++)
+            if (!isdigit(n[i]))
+                 throw runtime_error("Неверный формат ввода, введите два числа в формате число1_число2");
+
+        for(int i = 0; i < k.size();i++)
+            if (!isdigit(k[i]))
+                 throw runtime_error("Неверный формат ввода, введите два числа в формате число1_число2");
+
         mpz_set_str(N.get_mpz_t(),n.c_str(),10);
         mpz_set_str(K.get_mpz_t(),k.c_str(),10);
         if (N < K){
@@ -137,13 +147,13 @@ void MainWindow::on_pushButton_clicked()
     }
 
     if (!s.switchOn){
-    s.Start();
-    s.switchOn = true;
+        s.Start();
+        s.switchOn = true;
     }
     set_proc(0);
     }
-   catch(char const* message){
-       QMessageBox::warning(this,"Warning", message);
+    catch (std::runtime_error& e) {
+        QMessageBox::warning(this,"Warning", e.what());
    }
 }
 
