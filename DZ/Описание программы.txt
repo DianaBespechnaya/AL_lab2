@@ -9,3 +9,5 @@
 Все необходимый файлы для работы программы можно скачать из репозитория: 
 https://github.com/DianaBespechnaya/AL_DZ 
 или
+https://github.com/Nastya232323/DZ_AL_QT
+https://github.com/Nastya232323/DZ_client
